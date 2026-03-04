@@ -34,3 +34,17 @@ li {
   text-decoration: line-through;
   color: gray;
 }
+
+/* editing state */
+li input.editing {
+  flex: 1;
+  padding: 4px;
+  font-size: 1em;
+}
+
+/* counter style */
+.task-count {
+  margin-top: 10px;
+  font-size: 0.9em;
+  color: #555;
+}
