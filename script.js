@@ -1,4 +1,3 @@
-// Your challenge (don’t skip)
 // Implement at least 2 of these:
 // Edit a task ✏️
 // Filter: All / Completed / Pending
@@ -9,10 +8,16 @@ const form = document.getElementById("todo-form");
 const input = document.getElementById("todo-input");
 const list = document.getElementById("todo-list");
 const countEl = document.getElementById("todo-count");
-
 let todos = JSON.parse(localStorage.getItem("todos")) || [];
+let currentFilter = 'all';
 
 renderTodos();
+
+// Save + Render
+function saveAndRender() {
+  localStorage.setItem("todos", JSON.stringify(todos));
+  renderTodos();
+}
 
 // Add todo
 form.addEventListener("submit", function (e) {
@@ -26,19 +31,51 @@ form.addEventListener("submit", function (e) {
   input.value = "";
 });
 
+// Create filter buttons
+const filterContainer = document.createElement('div');
+filterContainer.id = 'filter-container';
+filterContainer.innerHTML = `
+  <button id="filter-all">All</button>
+  <button id="filter-completed">Completed</button>
+  <button id="filter-pending">Pending</button>
+`;
+document.querySelector('.todo-app').insertBefore(filterContainer, list);
+
+// Add event listeners for filters
+document.getElementById('filter-all').addEventListener('click', () => {
+  currentFilter = 'all';
+  renderTodos();
+});
+document.getElementById('filter-completed').addEventListener('click', () => {
+  currentFilter = 'completed';
+  renderTodos();
+});
+document.getElementById('filter-pending').addEventListener('click', () => {
+  currentFilter = 'pending';
+  renderTodos();
+});
+
 // Render todos
 function renderTodos() {
   list.innerHTML = "";
+
+  // Filter todos based on currentFilter
+  let filteredTodos = todos;
+  if (currentFilter === 'completed') {
+    filteredTodos = todos.filter(todo => todo.completed);
+  } else if (currentFilter === 'pending') {
+    filteredTodos = todos.filter(todo => !todo.completed);
+  }
 
   // update counter text
   if (countEl) {
     countEl.textContent = todos.length === 1 ? "1 task" : `${todos.length} tasks`;
   }
 
-  todos.forEach((todo, index) => {
+  filteredTodos.forEach((todo) => {
+    const originalIndex = todos.indexOf(todo);
     const li = document.createElement("li");
     li.textContent = todo.text;
-
     if (todo.completed) li.classList.add("completed");
 
     // Toggle complete
@@ -52,7 +89,7 @@ function renderTodos() {
     editBtn.textContent = "✏️";
     editBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      startEdit(index, li);
+      startEdit(originalIndex, li);
     });
 
     // Delete button
@@ -60,7 +97,7 @@ function renderTodos() {
     delBtn.textContent = "❌";
     delBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      todos.splice(index, 1);
+      todos.splice(originalIndex, 1);
       saveAndRender();
     });
 
@@ -106,10 +143,4 @@ function startEdit(index, li) {
   inputEl.addEventListener("blur", () => {
     finishEdit(true);
   });
-}
-
-// Save + Render
-function saveAndRender() {
-  localStorage.setItem("todos", JSON.stringify(todos));
-  renderTodos();
 }
