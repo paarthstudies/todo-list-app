@@ -29,17 +29,6 @@ form.addEventListener("submit", function (e) {
   todos.push({ text, completed: false });
   saveAndRender();
   input.value = "";
-});
-
-// Create filter buttons
-const filterContainer = document.createElement('div');
-filterContainer.id = 'filter-container';
-filterContainer.innerHTML = `
-  <button id="filter-all">All</button>
-  <button id="filter-completed">Completed</button>
-  <button id="filter-pending">Pending</button>
-`;
-document.querySelector('.todo-app').insertBefore(filterContainer, list);
 
 // Add event listeners for filters
 document.getElementById('filter-all').addEventListener('click', () => {
