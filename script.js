@@ -29,6 +29,7 @@ form.addEventListener("submit", function (e) {
   todos.push({ text, completed: false });
   saveAndRender();
   input.value = "";
+});
 
 // Add event listeners for filters
 document.getElementById('filter-all').addEventListener('click', () => {
